@@ -14,10 +14,10 @@ router.route('/').get(getUsers).post(createUser);
 // /api/Users/:UserId
 router.route('/:UserId').get(getSingleUser).delete(deleteUser);
 
-// /api/Users/:UserId/assignments
-router.route('/:UserId/assignments').post(addAssignment);
+// /api/Users/:UserId/reactions
+router.route('/:UserId/reactions').post(addAssignment);
 
-// /api/Users/:UserId/assignments/:assignmentId
-router.route('/:UserId/assignments/:assignmentId').delete(removeAssignment);
+// /api/Users/:UserId/reactions/:reactionId
+router.route('/:UserId/reactions/:reactionId').delete(removeAssignment);
 
 module.exports = router;
