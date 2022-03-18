@@ -1,4 +1,4 @@
-const { User, Thought } = require('../models');
+const { User, Thought, Reaction } = require('../models');
 
 // Aggregate function to get the number of Users overall
 const headCount = async () =>
@@ -26,11 +26,11 @@ module.exports = {
   },
   // Get a single user
   getSingleUser(req, res) {
-    User.findOne({ _id: req.params.userId })
-      .select('-__v')
+    User.findOne({ _id: req.params.UserId })
+      .select()
       .then(async (user) =>
         !user
-          ? res.status(404).json({ message: 'No user with that ID' })
+          ? res.status(404).json({ message: `No user with ${req.params.UserId}` })
           : res.json(user)
       )
       .catch((err) => {
@@ -46,13 +46,13 @@ module.exports = {
   },
   // Delete a user and remove them from the thought
   deleteUser(req, res) {
-    User.findOneAndRemove({ _id: req.params.userId })
+    User.findOneAndRemove({ _id: req.params.UserId })
       .then((user) =>
         !user
           ? res.status(404).json({ message: 'No such user exists' })
           : Thought.findOneAndUpdate(
-              { users: req.params.userId },
-              { $pull: { users: req.params.userId } },
+              { users: req.params.UserId },
+              { $pull: { users: req.params.UserId } },
               { new: true }
             )
       )
@@ -74,8 +74,8 @@ module.exports = {
     console.log('You are adding an friend');
     console.log(req.body);
     User.findOneAndUpdate(
-      { _id: req.params.userId },
-      { $addToSet: { friends: req.body } },
+      { _id: req.params.UserId },
+      { $addToSet: { friends: req.params.friendId } },
       { runValidators: true, new: true }
     )
       .then((user) =>
@@ -90,7 +90,7 @@ module.exports = {
   // Remove friend from a user
   removeFriend(req, res) {
     User.findOneAndUpdate(
-      { _id: req.params.userId },
+      { _id: req.params.UserId },
       { $pull: { friend: { friendId: req.params.friendId } } },
       { runValidators: true, new: true }
     )
@@ -103,4 +103,17 @@ module.exports = {
       )
       .catch((err) => res.status(500).json(err));
   },
+    //
+  createReaction(req, res) {
+    Thought.findOneAndUpdate(
+      { _id: req.params.UserId },
+      { $addToSet: { reactions: req.body }},
+      { runValidators: true, new: true }
+    )
+      .then((reaction) => res.json(reaction))
+      .catch((err) => {
+                  console.log(err);
+        return res.status(500).json(err);
+      })
+    }
 };
