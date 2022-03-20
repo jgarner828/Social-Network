@@ -1,6 +1,5 @@
-const { default: mongoose } = require('mongoose');
 const { Schema, model } = require('mongoose');
-const Thought = require('./Thought');
+const {thoughtSchema} = require('./Thought');
 
 
 

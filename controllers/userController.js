@@ -44,6 +44,19 @@ module.exports = {
       .then((user) => res.json(user))
       .catch((err) => res.status(500).json(err));
   },
+
+  // update username by req.params.UserId
+  updateUsername(req, res) {
+    User.findOneAndUpdate(
+      { _id: req.params.UserId },
+      { username: req.body.username}
+      )
+      .then((user) => res.json(user))
+      .catch((err) => res.status(500).json(err));
+  },
+
+
+
   // Delete a user and remove them from the thought
   deleteUser(req, res) {
     User.findOneAndRemove({ _id: req.params.UserId })
